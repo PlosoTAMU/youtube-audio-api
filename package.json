@@ -1,8 +1,4 @@
 {
   "name": "youtube-audio-api",
-  "version": "1.0.0",
-  "dependencies": {
-    "@distube/ytdl-core": "^4.14.4",
-    "undici": "^6.0.0"
-  }
+  "version": "1.0.0"
 }
