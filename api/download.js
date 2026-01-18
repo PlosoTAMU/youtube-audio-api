@@ -1,4 +1,10 @@
 import ytdl from '@distube/ytdl-core';
+import { Agent } from 'undici';
+
+// Configure agent with cookies for better YouTube access
+const agent = new Agent({
+  pipelining: 0,
+});
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,7 +25,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid YouTube URL' });
     }
 
-    const info = await ytdl.getInfo(url);
+    // Get video info with agent and disable debug file writing
+    const info = await ytdl.getInfo(url, {
+      agent,
+      // Disable file writing that causes EROFS error
+      debug: false,
+    });
     
     // Get audio formats
     const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
