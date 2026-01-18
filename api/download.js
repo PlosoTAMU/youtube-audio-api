@@ -1,4 +1,4 @@
-import ytdl from 'ytdl-core';
+import ytdl from '@distube/ytdl-core';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,13 +20,16 @@ export default async function handler(req, res) {
     }
 
     const info = await ytdl.getInfo(url);
+    
+    // Get audio formats
     const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
     
     if (audioFormats.length === 0) {
       return res.status(404).json({ error: 'No audio stream found' });
     }
 
-    const bestAudio = audioFormats[0];
+    // Sort by quality and get best
+    const bestAudio = audioFormats.sort((a, b) => b.audioBitrate - a.audioBitrate)[0];
 
     return res.status(200).json({
       title: info.videoDetails.title,
